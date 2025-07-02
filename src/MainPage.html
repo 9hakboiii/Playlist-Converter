@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playlist Converter | YouTube to Spotify</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'spotify-green': '#1DB954',
+                        'spotify-dark': '#191414',
+                        'spotify-light': '#282828',
+                        'spotify-gray': '#535353',
+                        'spotify-light-gray': '#B3B3B3',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #191414;
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            background-color: #000000;
+            height: 100vh;
+            position: fixed;
+            width: 240px;
+        }
+        
+        .main-content {
+            margin-left: 240px;
+            padding-bottom: 100px;
+        }
+        
+        .playlist-card:hover {
+            transform: scale(1.02);
+            transition: transform 0.3s ease;
+        }
+        
+        .progress-bar {
+            height: 4px;
+            background-color: #535353;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: #1DB954;
+            width: 30%;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #282828;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #535353;
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #1DB954;
+        }
+    </style>
+</head>
+<body>
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="sidebar p-5 hidden md:block">
+            <div class="mb-10">
+                <h1 class="text-2xl font-bold text-white flex items-center">
+                    <i class="fab fa-spotify text-spotify-green mr-2 text-3xl"></i>
+                    Playlist Converter
+                </h1>
+            </div>
+            
+            <ul class="space-y-4">
+                <li>
+                    <a href="#" class="flex items-center text-white hover:text-spotify-green">
+                        <i class="fas fa-home mr-3"></i>
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center text-white hover:text-spotify-green">
+                        <i class="fas fa-search mr-3"></i>
+                        Search
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center text-white hover:text-spotify-green">
+                        <i class="fas fa-bookmark mr-3"></i>
+                        Your Library
+                    </a>
+                </li>
+                <li class="mt-8">
+                    <a href="#" class="flex items-center text-white hover:text-spotify-green">
+                        <i class="fas fa-plus-square mr-3"></i>
+                        Create Playlist
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center text-white hover:text-spotify-green">
+                        <i class="fas fa-heart mr-3"></i>
+                        Liked Songs
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="border-t border-spotify-gray mt-8 pt-4">
+                <p class="text-spotify-light-gray text-xs">
+                    &copy; 2023 Playlist Converter
+                </p>
+            </div>
+        </div>
+        
+        <!-- Mobile Header -->
+        <div class="md:hidden w-full bg-black p-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold text-white flex items-center">
+                <i class="fab fa-spotify text-spotify-green mr-2 text-2xl"></i>
+                Playlist Converter
+            </h1>
+            <button id="mobile-menu-button" class="text-white">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu (hidden by default) -->
+        <div id="mobile-menu" class="hidden w-full bg-black p-4 md:hidden">
+            <ul class="space-y-4">
+                <li>
+                    <a href="#" class="flex items-center text-white hover:text-spotify-green">
+                        <i class="fas fa-home mr-3"></i>
+                        Home
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center text-white hover:text-spotify-green">
+                        <i class="fas fa-search mr-3"></i>
+                        Search
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center text-white hover:text-spotify-green">
+                        <i class="fas fa-bookmark mr-3"></i>
+                        Your Library
+                    </a>
+                </li>
+                <li class="mt-4">
+                    <a href="#" class="flex items-center text-white hover:text-spotify-green">
+                        <i class="fas fa-plus-square mr-3"></i>
+                        Create Playlist
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="flex items-center text-white hover:text-spotify-green">
+                        <i class="fas fa-heart mr-3"></i>
+                        Liked Songs
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content w-full">
+            <!-- Hero Section -->
+            <div class="bg-gradient-to-b from-spotify-gray to-spotify-dark p-8">
+                <div class="max-w-6xl mx-auto">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6">Convert YouTube to Spotify</h1>
+                    <p class="text-xl md:text-2xl mb-8 text-spotify-light-gray">Easily transfer your favorite playlists from YouTube to Spotify</p>
+                    
+                    <!-- Converter Form -->
+                    <div class="bg-spotify-light p-6 rounded-lg shadow-lg max-w-3xl">
+                        <h2 class="text-2xl font-bold mb-4">Paste YouTube Playlist URL</h2>
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <input 
+                                type="text" 
+                                placeholder="https://www.youtube.com/playlist?list=..." 
+                                class="flex-grow p-4 rounded bg-spotify-gray text-white placeholder-spotify-light-gray focus:outline-none focus:ring-2 focus:ring-spotify-green"
+                            >
+                            <button class="bg-spotify-green hover:bg-green-600 text-black font-bold py-4 px-8 rounded flex items-center justify-center">
+                                <i class="fab fa-spotify mr-2"></i> Convert
+                            </button>
+                        </div>
+                        <div class="mt-4 text-sm text-spotify-light-gray">
+                            <p>We'll analyze the playlist and create a matching one on your Spotify account.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Conversions -->
+            <div class="p-8 max-w-6xl mx-auto">
+                <h2 class="text-2xl font-bold mb-6">Recent Conversions</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Playlist Card 1 -->
+                    <div class="bg-spotify-light p-4 rounded-lg playlist-card cursor-pointer hover:bg-spotify-gray transition-all duration-300">
+                        <div class="relative mb-4">
+                            <img src="https://via.placeholder.com/300x300" alt="Playlist Cover" class="w-full rounded">
+                            <div class="absolute bottom-2 right-2 bg-spotify-green rounded-full p-2 hover:scale-110 transition-transform">
+                                <i class="fas fa-play text-black"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-lg mb-1">Summer Vibes 2023</h3>
+                        <p class="text-spotify-light-gray text-sm">Converted from YouTube • 24 songs</p>
+                        <div class="flex items-center mt-3">
+                            <div class="w-8 h-8 rounded-full bg-spotify-gray flex items-center justify-center mr-2">
+                                <i class="fab fa-youtube text-red-500"></i>
+                            </div>
+                            <div class="w-8 h-8 rounded-full bg-spotify-gray flex items-center justify-center">
+                                <i class="fab fa-spotify text-spotify-green"></i>
+                            </div>
+                            <div class="ml-auto text-spotify-light-gray text-sm">
+                                3 days ago
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Playlist Card 2 -->
+                    <div class="bg-spotify-light p-4 rounded-lg playlist-card cursor-pointer hover:bg-spotify-gray transition-all duration-300">
+                        <div class="relative mb-4">
+                            <img src="https://via.placeholder.com/300x300" alt="Playlist Cover" class="w-full rounded">
+                            <div class="absolute bottom-2 right-2 bg-spotify-green rounded-full p-2 hover:scale-110 transition-transform">
+                                <i class="fas fa-play text-black"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-lg mb-1">Workout Mix</h3>
+                        <p class="text-spotify-light-gray text-sm">Converted from YouTube • 45 songs</p>
+                        <div class="flex items-center mt-3">
+                            <div class="w-8 h-8 rounded-full bg-spotify-gray flex items-center justify-center mr-2">
+                                <i class="fab fa-youtube text-red-500"></i>
+                            </div>
+                            <div class="w-8 h-8 rounded-full bg-spotify-gray flex items-center justify-center">
+                                <i class="fab fa-spotify text-spotify-green"></i>
+                            </div>
+                            <div class="ml-auto text-spotify-light-gray text-sm">
+                                1 week ago
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Playlist Card 3 -->
+                    <div class="bg-spotify-light p-4 rounded-lg playlist-card cursor-pointer hover:bg-spotify-gray transition-all duration-300">
+                        <div class="relative mb-4">
+                            <img src="https://via.placeholder.com/300x300" alt="Playlist Cover" class="w-full rounded">
+                            <div class="absolute bottom-2 right-2 bg-spotify-green rounded-full p-2 hover:scale-110 transition-transform">
+                                <i class="fas fa-play text-black"></i>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-lg mb-1">Chill Lofi Beats</h3>
+                        <p class="text-spotify-light-gray text-sm">Converted from YouTube • 120 songs</p>
+                        <div class="flex items-center mt-3">
+                            <div class="w-8 h-8 rounded-full bg-spotify-gray flex items-center justify-center mr-2">
+                                <i class="fab fa-youtube text-red-500"></i>
+                            </div>
+                            <div class="w-8 h-8 rounded-full bg-spotify-gray flex items-center justify-center">
+                                <i class="fab fa-spotify text-spotify-green"></i>
+                            </div>
+                            <div class="ml-auto text-spotify-light-gray text-sm">
+                                2 weeks ago
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- How It Works Section -->
+            <div class="bg-spotify-dark p-8">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-2xl font-bold mb-8 text-center">How It Works</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="text-center">
+                            <div class="bg-spotify-green rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-link text-2xl text-black"></i>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2">1. Paste YouTube URL</h3>
+                            <p class="text-spotify-light-gray">Copy and paste any YouTube playlist link into our converter</p>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="bg-spotify-green rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-cogs text-2xl text-black"></i>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2">2. We Analyze the Playlist</h3>
+                            <p class="text-spotify-light-gray">Our system matches each YouTube track to its Spotify equivalent</p>
+                        </div>
+                        
+                        <div class="text-center">
+                            <div class="bg-spotify-green rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                                <i class="fab fa-spotify text-2xl text-black"></i>
+                            </div>
+                            <h3 class="font-bold text-lg mb-2">3. Enjoy on Spotify</h3>
+                            <p class="text-spotify-light-gray">The new playlist appears in your Spotify account automatically</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Player Bar (Fixed Bottom) -->
+    <div class="fixed bottom-0 left-0 right-0 bg-spotify-light border-t border-spotify-gray p-4 flex items-center">
+        <div class="flex items-center w-1/4">
+            <img src="https://via.placeholder.com/56x56" alt="Now Playing" class="rounded mr-4">
+            <div>
+                <h4 class="font-bold text-sm">Song Title</h4>
+                <p class="text-spotify-light-gray text-xs">Artist Name</p>
+            </div>
+            <div class="ml-4 flex">
+                <button class="text-spotify-light-gray hover:text-white mx-2">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="w-2/4 flex flex-col items-center">
+            <div class="flex items-center mb-2">
+                <button class="text-spotify-light-gray hover:text-white mx-2">
+                    <i class="fas fa-random"></i>
+                </button>
+                <button class="text-spotify-light-gray hover:text-white mx-2">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="bg-white text-black rounded-full w-8 h-8 flex items-center justify-center mx-2 hover:scale-110">
+                    <i class="fas fa-pause"></i>
+                </button>
+                <button class="text-spotify-light-gray hover:text-white mx-2">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+                <button class="text-spotify-light-gray hover:text-white mx-2">
+                    <i class="fas fa-redo"></i>
+                </button>
+            </div>
+            <div class="w-full flex items-center">
+                <span class="text-spotify-light-gray text-xs mr-2">1:23</span>
+                <div class="progress-bar flex-grow rounded-full">
+                    <div class="progress rounded-full"></div>
+                </div>
+                <span class="text-spotify-light-gray text-xs ml-2">3:45</span>
+            </div>
+        </div>
+        
+        <div class="w-1/4 flex justify-end items-center">
+            <button class="text-spotify-light-gray hover:text-white mx-2">
+                <i class="fas fa-list"></i>
+            </button>
+            <button class="text-spotify-light-gray hover:text-white mx-2">
+                <i class="fas fa-laptop"></i>
+            </button>
+            <div class="flex items-center ml-4">
+                <button class="text-spotify-light-gray hover:text-white">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+                <div class="progress-bar w-20 ml-2 rounded-full">
+                    <div class="progress rounded-full" style="width: 70%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+        
+        // Simulate form submission
+        document.querySelector('button.bg-spotify-green').addEventListener('click', function() {
+            const input = document.querySelector('input[type="text"]');
+            if (input.value.trim() === '') {
+                alert('Please enter a YouTube playlist URL');
+                return;
+            }
+            
+            // Show loading state
+            const button = this;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+            button.disabled = true;
+            
+            // Simulate API call
+            setTimeout(function() {
+                // Show success message
+                alert('Playlist conversion started! We\'ll notify you when it\'s ready.');
+                
+                // Reset button
+                button.innerHTML = originalText;
+                button.disabled = false;
+                input.value = '';
+            }, 1500);
+        });
+    </script>
+</body>
+</html>

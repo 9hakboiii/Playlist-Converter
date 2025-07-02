@@ -1,8 +1,9 @@
-# YouTube to Spotify 플레이리스트 변환기
+# 🎵 YouTube to Spotify 플레이리스트 변환기
+![SpotifyGIF](https://github.com/user-attachments/assets/6c82d5a4-9dbc-42ff-8a2d-aa115ce90e0d)
 
 YouTube 플레이리스트를 Spotify 플레이리스트로 자동 변환하는 웹 애플리케이션입니다.
 
-## 주요 기능
+## 🖥️ 주요 기능
 
 - YouTube 플레이리스트 URL을 입력하여 Spotify 플레이리스트로 변환
 - Spotify 스타일의 모던한 UI/UX
@@ -10,7 +11,7 @@ YouTube 플레이리스트를 Spotify 플레이리스트로 자동 변환하는 
 - 매치되지 않은 곡 리포트
 - 반응형 디자인 (모바일, 태블릿, 데스크톱 지원)
 
-## 기술 스택
+## 🛠️ 기술 스택
 
 - **Frontend**: React 19, Vite, Tailwind CSS
 - **API**: YouTube Data API v3, Spotify Web API
@@ -18,7 +19,7 @@ YouTube 플레이리스트를 Spotify 플레이리스트로 자동 변환하는 
 - **알림**: React Toastify
 - **HTTP 클라이언트**: Axios
 
-## 설치 및 실행
+## 📚 설치 및 실행
 
 ### 1. 프로젝트 클론
 
@@ -49,7 +50,7 @@ REACT_APP_SPOTIFY_CLIENT_SECRET=your_spotify_client_secret_here
 REACT_APP_SPOTIFY_REDIRECT_URI=http://localhost:5173/callback
 ```
 
-### 4. API 키 획득 방법
+### ⌨️ 4. API 키 획득 방법
 
 #### YouTube Data API v3 키
 
@@ -95,7 +96,7 @@ npm run dev
 - `https://www.youtube.com/playlist?list=PLxxxxxxxxxxxxxxx`
 - `https://youtube.com/playlist?list=PLxxxxxxxxxxxxxxx`
 
-## 프로젝트 구조
+## 📂 프로젝트 구조
 
 ```
 src/
@@ -115,7 +116,7 @@ src/
 └── index.css           # 전역 스타일
 ```
 
-## 특징
+## 💡 특징
 
 ### 스마트 곡 매칭
 
@@ -136,7 +137,7 @@ src/
 - 대용량 플레이리스트 지원 (100곡씩 배치 처리)
 - 로컬 스토리지를 통한 토큰 관리
 
-## 빌드
+## 🏗️ 빌드
 
 프로덕션 빌드를 생성하려면:
 
@@ -146,8 +147,11 @@ npm run build
 
 빌드된 파일들은 `dist/` 폴더에 생성됩니다.
 
+## 📊 데모
 
-## 기여
+준비중 입니다.
+
+## ⭐ 기여
 
 1. 이 저장소를 포크하세요
 2. 기능 브랜치를 생성하세요 (`git checkout -b feature/AmazingFeature`)
@@ -155,6 +159,6 @@ npm run build
 4. 브랜치에 푸시하세요 (`git push origin feature/AmazingFeature`)
 5. Pull Request를 열어주세요
 
-## 지원
+## 👨‍🔧 지원
 
 문제가 발생하거나 제안사항이 있으시면 Issues 탭에서 알려주세요.

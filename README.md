@@ -50,7 +50,7 @@ REACT_APP_SPOTIFY_CLIENT_SECRET=your_spotify_client_secret_here
 REACT_APP_SPOTIFY_REDIRECT_URI=http://localhost:5173/callback
 ```
 
-### ⌨️ 4. API 키 획득 방법
+### 4. API 키 획득 방법
 
 #### YouTube Data API v3 키
 
@@ -77,7 +77,7 @@ npm run dev
 
 애플리케이션이 `http://localhost:5173`에서 실행됩니다.
 
-## 사용 방법
+## 👆 사용 방법
 
 ### 1. Spotify 로그인
 

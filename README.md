@@ -25,7 +25,6 @@ YouTube 플레이리스트를 Spotify 플레이리스트로 자동 변환하는 
 
 ```bash
 git clone <repository-url>
-cd 채팅
 ```
 
 ### 2. 종속성 설치
